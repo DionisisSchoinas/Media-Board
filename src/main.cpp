@@ -72,6 +72,10 @@ void setup() {
   
   pinMode(BUTTON_2_LED_PIN, INPUT_PULLUP);
   digitalWrite(BUTTON_2_LED_PIN, LOW);
+
+  // Turn off TX and RX leds
+  pinMode(LED_BUILTIN_TX,INPUT);
+  pinMode(LED_BUILTIN_RX,INPUT);
   
   // Volume rotary encoder
   attachInterrupt(digitalPinToInterrupt(VOLUME_ENCODER_CLK), volumeAdjust, CHANGE);
@@ -191,7 +195,7 @@ void volumeAdjust() {
       for (int i=0;i<volumeAccelaration.getSpeed(); i++) {
         Consumer.press(MEDIA_VOLUME_DOWN);
         Consumer.release(MEDIA_VOLUME_DOWN);
-      }\
+      }
       break;
   }
 }
