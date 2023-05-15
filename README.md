@@ -1,5 +1,11 @@
 # Important Information
-When Uploading code to the Arduino, the board needs to be reset for the Upload to succeed.
+**When Uploading code to the Arduino Pro Micro, the board needs to be reset for the Upload to succeed.**
+
+Steps:
+1. Close the circuit between Reset and GND pins
+2. Start Upload
+3. Wait until Upload reaches the state where it looks for the board
+4. Open the circuit between Reset and GND pins
 
 # Components
 * Arduino Leonardo
@@ -22,13 +28,15 @@ When Uploading code to the Arduino, the board needs to be reset for the Upload t
     </thead>
     <tbody>
         <tr>
-            <td>
-                Buttons
+            <td width=100px>
+                <b>Buttons</b>
+                <br>(Button 3 is used as a mode changer)
             </td>
             <td>
                 <table>
                     <tbody>
                         <tr>
+                            <td rowspan=3>Mode 1</td>
                             <td>Button 1</td>
                             <td>Tab Volume Mute</td>
                             <td><kbd>Ctrl</kbd>+<kbd>M</kbd></td>
@@ -43,13 +51,29 @@ When Uploading code to the Arduino, the board needs to be reset for the Upload t
                             <td>Player Play-Pause</td>
                             <td>Media Play-Pause</td>
                         </tr>
+                        <tr>
+                            <td rowspan=3>Mode 2</td>
+                            <td>Button 1</td>
+                            <td>Previous Song</td>
+                            <td>Media Prev</td>
+                        </tr>
+                        <tr>
+                            <td>Button 2</td>
+                            <td>Next Song</td>
+                            <td>Media Next</td>
+                        </tr>
+                        <tr>
+                            <td>Button 3</td>
+                            <td>Mode stay in 2</td>
+                            <td>Hold button</td>
+                        </tr>
                     </tbody>
                 </table>
             </td>
         </tr>
         <tr>
             <td>
-                Joystick
+                <b>Joystick</b>
             </td>
             <td>
                 <table>
@@ -80,7 +104,7 @@ When Uploading code to the Arduino, the board needs to be reset for the Upload t
         </tr>
         <tr>
             <td rowspan="6">
-                Rotary Encoders
+                <b>Rotary Encoders</b>
             </td>
             <td>
                 <table>

@@ -60,6 +60,9 @@ int getMappedJoystickValue(int pinValue);
 int getMappedJoystickValueWithDelay(int index);
 int checkEncoderRotation(AdvancedDigitalPin &clk, AdvancedDigitalPin &dt);
 
+bool extraButtonWasPressed;
+bool mainButtonWasPressed;
+
 void setup() {
   wdt_disable();
   //Serial.begin(9600);
@@ -76,6 +79,9 @@ void setup() {
   // Zoom rotary encoder
   attachInterrupt(digitalPinToInterrupt(ZOOM_ENCODER_CLK), zoomAdjust, CHANGE);
 
+  extraButtonWasPressed = false;
+  mainButtonWasPressed = false;
+
   // Set Watchdog to expect an update every 1 second
   wdt_enable(WDTO_1S);
 }
@@ -84,27 +90,48 @@ void loop() {
   // Tell Watchdog everything is fine
   wdt_reset();
   
-  if (isFirstPress(button3)){
-    Consumer.press(MEDIA_PLAY_PAUSE);
-    Consumer.release(MEDIA_PLAY_PAUSE);
-  }
+  if (isHeld(button3)){
+    mainButtonWasPressed = true;
+    
+    if (isFirstPress(button1)) {
+      extraButtonWasPressed = true;
+      Consumer.press(MEDIA_PREV);
+      Consumer.release(MEDIA_PREV);
+    }
 
-  // Left Ctrl + m
-  if (isFirstPress(button1)) {
-    Keyboard.press(KEY_LEFT_CTRL);
-    Keyboard.press('m');
-    Keyboard.releaseAll();
+    if (isFirstPress(button2)) {
+      extraButtonWasPressed = true;
+      Consumer.press(MEDIA_NEXT);
+      Consumer.release(MEDIA_NEXT);
+    }
   }
+  else {
+    if (mainButtonWasPressed) {
+      if (!extraButtonWasPressed) {
+        Consumer.press(MEDIA_PLAY_PAUSE);
+        Consumer.release(MEDIA_PLAY_PAUSE);
+      }
+      mainButtonWasPressed = false;
+      extraButtonWasPressed = false;
+    }
 
-  // Left Ctrl + Left Alt + Left Windows Key + m
-  if (isFirstPress(button2)) {
-    Keyboard.press(KEY_LEFT_CTRL);
-    Keyboard.press(KEY_LEFT_ALT);
-    Keyboard.press(KEY_LEFT_GUI);
-    Keyboard.press('m');
-    Keyboard.releaseAll();
-    // Swap LED state
-    digitalWrite(BUTTON_2_LED_PIN, !digitalRead(BUTTON_2_LED_PIN));
+    // Left Ctrl + m
+    if (isFirstPress(button1)) {
+      Keyboard.press(KEY_LEFT_CTRL);
+      Keyboard.press('m');
+      Keyboard.releaseAll();
+    }
+
+    // Left Ctrl + Left Alt + Left Windows Key + m
+    if (isFirstPress(button2)) {
+      Keyboard.press(KEY_LEFT_CTRL);
+      Keyboard.press(KEY_LEFT_ALT);
+      Keyboard.press(KEY_LEFT_GUI);
+      Keyboard.press('m');
+      Keyboard.releaseAll();
+      // Swap LED state
+      digitalWrite(BUTTON_2_LED_PIN, !digitalRead(BUTTON_2_LED_PIN));
+    }
   }
     
   // Consumer Mute
@@ -251,7 +278,7 @@ bool isFirstPress(AdvancedDigitalPin &b) {
     b.setState(LOW);
     return true;
   } 
-  else if (sensorVal == HIGH) {
+  else if (sensorVal == HIGH && b.getState() == LOW) {
     b.setState(HIGH);
   }
   return false;  
@@ -267,17 +294,17 @@ bool isHeld(AdvancedDigitalPin &b) {
     return false;
     
   int sensorVal = b.getCurrentPinState();
-  if (b.getState() == sensorVal)
-    return false;
+  if (b.getState() == sensorVal && sensorVal == LOW)
+    return true;
 
   if (sensorVal == LOW) {
     b.setState(LOW);
     return true;
   } 
-  else if (sensorVal == HIGH) {
+  else if (sensorVal == HIGH && b.getState() == LOW) {
     b.setState(HIGH);
   }
-  return false;  
+  return false;
 }
 
 int checkEncoderRotation(AdvancedDigitalPin &clk, AdvancedDigitalPin &dt) {  
