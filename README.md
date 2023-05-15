@@ -8,7 +8,7 @@ Steps:
 4. Open the circuit between Reset and GND pins
 
 # Components
-* Arduino Leonardo
+* Arduino Leonardo / Pro Micro
 * Rotary Encoder Module Brick Sensor for Arduino KY-040 **(x2)**
 * Dual-axis XY PS2 Joystick Module For Arduino
 * B3F-4055 Push Button - Tactile Switch **(x3)**
